@@ -31,5 +31,3 @@ Thumbs.db
 
 # Ignore outras saídas específicas de testes ou builds
 /coverage/
-
-img/

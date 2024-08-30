@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
-const base64Regex = /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/;
-
+const base64Regex =
+	/^data:image\/(jpeg|png|gif|bmp|webp|svg\+xml);base64,[A-Za-z0-9+/=]+$/;
 export const uploadSchema = yup.object().shape({
 	image: yup
 		.string()

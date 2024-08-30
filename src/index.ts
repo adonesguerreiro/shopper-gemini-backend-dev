@@ -1,11 +1,15 @@
 import { confirmSchema } from "./schema/confirmSchema";
-import { PrismaClient } from "@prisma/client";
+import { MeasureType, PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import { uploadSchema } from "./schema/uploadSchema";
 import { gemini } from "./services/gemini";
 import * as yup from "yup";
 import { googleFileManager } from "./services/googleFileManager";
+import cors from "cors";
+import { uploadData } from "./interfaces/uploadData";
+import { confirmData } from "./interfaces/confirmData";
+import { customerData } from "./interfaces/customerData";
 
 dotenv.config();
 
@@ -14,8 +18,12 @@ const port = 5000;
 const prisma = new PrismaClient();
 
 app.use(express.json({ limit: "50mb" }));
+app.use(cors());
 
-app.post("/upload", async (req: Request, res: Response) => {
+interface UploadRequest extends Request {
+	body: uploadData;
+}
+app.post("/upload", async (req: UploadRequest, res: Response) => {
 	const { image, customer_code, measure_datetime, measure_type } = req.body;
 
 	try {
@@ -77,7 +85,11 @@ app.post("/upload", async (req: Request, res: Response) => {
 	}
 });
 
-app.patch("/confirm", async (req: Request, res: Response) => {
+interface ConfirmRequest extends Request {
+	body: confirmData;
+}
+
+app.patch("/confirm", async (req: ConfirmRequest, res: Response) => {
 	const { measure_uuid, confirmed_value } = req.body;
 
 	try {
@@ -138,7 +150,10 @@ app.patch("/confirm", async (req: Request, res: Response) => {
 	}
 });
 
-app.get("/:customer_code/list", async (req, res) => {
+interface CustomerRequest extends Request {
+	body: customerData;
+}
+app.get("/:customer_code/list", async (req: CustomerRequest, res: Response) => {
 	const { customer_code } = req.params;
 	const { measure_type } = req.query;
 
